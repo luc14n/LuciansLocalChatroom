@@ -1,5 +1,5 @@
 # Lucians Local Chatroom
-This is a project made for a computer networking class. The goal is to have a UTP client/server connection and allow coninuous chat over a local network.
+This is a project made for a computer networking class. The goal is to have a TCP client/server connection and allow coninuous chat over a local network.
 
 # Version 1.0
 Allows for multiple clients to connect to the running app, however the 'Sever' side chat window will only respond to the last client connected.
