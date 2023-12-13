@@ -86,3 +86,5 @@ if __name__ == '__main__':
     server_info_dialog.show()  # Use show() instead of exec_()
 
     sys.exit(app.exec_())
+
+#Merge Issues

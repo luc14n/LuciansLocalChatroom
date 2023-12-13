@@ -41,3 +41,5 @@ class ChatWindow(QMainWindow):
 
     def display_message(self, message):
         self.text_display.append(message)
+
+#Merge Issues

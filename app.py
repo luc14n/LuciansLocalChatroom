@@ -63,3 +63,5 @@ if __name__ == '__main__':
     main(port_number)  # Call the main function after creating the chat window
 
     sys.exit(app.exec_())
+
+#Merge Issues

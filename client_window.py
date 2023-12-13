@@ -80,3 +80,5 @@ class ClientChatWindow(QMainWindow):
             except Exception as e:
                 print(f"Error receiving message: {e}")
                 break
+
+#Merge Issues
