@@ -23,7 +23,10 @@ def get_local_ip():
 
 def send_message(message):
     chat_window.display_message(f"You: {message}")  # Display your messages
-    server.sendToConnectedClients(message, None)
+    client = server.clients.pop()
+    server.broadcast(message, client)
+    server.clients.append(client)
+    # You can handle the message sending logic here (e.g., send it to a server)
 
 def main(port_number):
     # Get the IP address of the system
@@ -31,8 +34,8 @@ def main(port_number):
 
     # Display the port number and IP address
     chat_window.display_message(f"---------------------------------")
-    chat_window.display_message(f"IP Address: {ip_address}")
     chat_window.display_message(f"Port Number: {port_number}")
+    chat_window.display_message(f"IP Address: {ip_address}")
     chat_window.display_message(f"---------------------------------")
 
     #sys.exit(1)
