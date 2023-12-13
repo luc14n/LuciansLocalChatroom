@@ -1,20 +1,24 @@
+import concurrent
 import socket
-import threading
+from threading import Thread
 
 # List to keep track of connected clients
 clients = []
+clientAddress = []
 
 def broadcast(message, sender_socket):
     print(f"Broadcasting: {message}")  # Debugging statement
     try:
-        print("Trying to send")  # Debugging statement
+        print(f"Trying to send to: {sender_socket}")  # Debugging statement
         sender_socket.send(message.encode())
+        print("Success")
     except Exception as e:
         print(f"Failed to send message to client: {e}")
 
-    #for client_socket in clients:
-    #    if client_socket != sender_socket:
-
+def sendToConnectedClients(message, user):
+    for userID in clients:
+        if userID != user:
+            broadcast(message, userID)
 
 class ChatServer:
     global global_socket
@@ -29,29 +33,41 @@ class ChatServer:
 
     def start(self):
         self.chat_window.display_message("Server is now listening for connections.")
+
+        connection_thread = Thread(target=self.seeNewConnections)
+        read_connection_thread = Thread(target=self.readConnections)
+
+        connection_thread.daemon = True
+        read_connection_thread.daemon = True
+
+        connection_thread.start()
+        read_connection_thread.start()
+
+            # Inside the server's main loop
+
+    def seeNewConnections(self):
         while True:
             client_socket, client_address = self.server_socket.accept()
             self.chat_window.display_message(f"Connected to {client_address}")
             clients.append(client_socket)  # Add the new client to the list
+            clientAddress.append(client_address)
 
-            # Inside the server's main loop
-            while True:
+
+    def readConnections(self):
+        print(2)
+        while True:
+            for userID in clients:
                 try:
-                    message = client_socket.recv(1024).decode()
+                    print(1)
+                    message = userID.recv(1024).decode()
                     if not message:
                         break  # Break the loop if no message is received (connection closed)
                     print(f"Received message: {message}")  # Debugging statement
-                    self.chat_window.display_message(f"Client {client_address}: {message}")
-                    #broadcast(message, client_socket)  # Broadcast the message to all connected clients
+                    self.chat_window.display_message(f"Client {userID}: {message}")
+                    sendToConnectedClients(message, userID)
                 except Exception as e:
                     print(f"Error receiving message: {e}")
                     break
-
-def send_message_to_client(message, client_socket):
-    try:
-        client_socket.send(message.encode())
-    except Exception as e:
-        print(f"Failed to send message to client: {e}")
 
 def server_thread(host, port, chat_window):
     server = ChatServer(host, port, chat_window)

@@ -7,9 +7,7 @@ class ClientChatWindow(QMainWindow):
 
     def __init__(self, send_message_callback, client_socket):
         super().__init__()
-
         self.client_socket = client_socket
-
         self.init_ui(send_message_callback)
 
     def init_ui(self, send_message_callback):
