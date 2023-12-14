@@ -2,6 +2,12 @@ import sys
 from PyQt5.QtWidgets import QApplication, QDialog, QVBoxLayout, QLineEdit, QPushButton, QLabel
 from threading import Thread
 import socket
+
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import padding
+
+import client_window
 from client_window import ClientChatWindow
 
 class ServerInfoDialog(QDialog):
@@ -44,6 +50,8 @@ class ServerInfoDialog(QDialog):
             server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             server_socket.connect((server_ip, server_port))
 
+            self.connect_encryption(server_socket)
+
             # Connection successful, open client chat window
             self.hide()  # Hide the server info dialog
             client_chat_window = open_client_chat_window(server_socket, self.userName.text())
@@ -52,6 +60,37 @@ class ServerInfoDialog(QDialog):
             print("Failed to connect to the server.")
         except Exception as e:
             print(f"An error occurred: {e}")
+
+    def connect_encryption(self, socket):
+        print(1)
+        public_key = socket.recv(1024)
+        print(public_key)
+
+        pem = public_key
+
+        with open('public_key.pem', 'wb') as f:
+            f.write(pem)
+
+        with open("public_key.pem", "rb") as key_file:
+            public_key = serialization.load_pem_public_key(
+                key_file.read(),
+                backend=default_backend()
+            )
+
+        print(2)
+
+        encryptedKey = public_key.encrypt(
+            client_window.key,
+            padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+            )
+        )
+        print(3)
+        socket.send(encryptedKey)
+        print(4)
+        print(client_window.key)
 
 
 def open_client_chat_window(client_socket, username):
@@ -63,7 +102,7 @@ def open_client_chat_window(client_socket, username):
     def receive_messages():
         while True:
             try:
-                message = client_socket.recv(1024).decode()
+                message = client_window.fernet.decrypt(client_socket.recv(1024)).decode()
                 if not message:
                     break  # Break the loop if no message is received (connection closed)
                 print(f"Received message")

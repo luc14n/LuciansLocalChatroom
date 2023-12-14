@@ -1,6 +1,9 @@
 # Default ignored files
-/shelf/
-/workspace.xml
+/.idea/*
+/venv/*
+/private_key.pem
+/public_key.pem
+/LucianChat.iml
 # Editor-based HTTP Client requests
 /httpRequests/
 # Datasource local storage ignored files

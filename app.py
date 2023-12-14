@@ -1,10 +1,7 @@
-import json
 import sys
 import threading
 import time
-from datetime import datetime
 
-import requests
 from PyQt5.QtWidgets import QApplication
 from window import ChatWindow
 from port_window import PortWindow

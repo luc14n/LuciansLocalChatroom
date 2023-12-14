@@ -1,6 +1,12 @@
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QTextEdit, QLineEdit
 from datetime import datetime
 import json
+from cryptography.fernet import Fernet
+
+
+# User key
+key = Fernet.generate_key()
+fernet = Fernet(key)
 
 class ClientChatWindow(QMainWindow):
 
@@ -33,14 +39,14 @@ class ClientChatWindow(QMainWindow):
 
         self.input_field.returnPressed.connect(self.send_button_clicked)
 
-        #self.send_message_callback = send_message_callback
-
     def send_button_clicked(self):
         message = {"username": self.userName,
                    "text": self.input_field.text(),
                    "time": str(datetime.now())}
         dump = json.dumps(message)
-        self.client_socket.send(dump.encode())
+
+        sendMessage(dump, self.client_socket)
+
         self.client_display_message(dump)
         self.input_field.clear()
 
@@ -49,4 +55,6 @@ class ClientChatWindow(QMainWindow):
         formatted_message = message["username"] + " (" + message["time"] + ") : " + message["text"]
         self.text_display.append(formatted_message)
 
-#Merge Issues
+def sendMessage(message, socket):
+    encyptedDump = fernet.encrypt(message.encode())
+    socket.send(encyptedDump)
