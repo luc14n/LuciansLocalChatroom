@@ -5,7 +5,6 @@ from datetime import datetime
 import json
 
 class ClientChatWindow(QMainWindow):
-    message_received = pyqtSignal(str, str)  # signal for the message and sender
 
     def __init__(self, send_message_callback, client_socket, username):
         super().__init__()
@@ -42,11 +41,6 @@ class ClientChatWindow(QMainWindow):
         self.send_message_callback(json.dumps(message))
         self.input_field.clear()
 
-    def send_message(self, client_chat_window, message):
-        if message:
-            self.message_received.emit(message)
-            self.input_field.clear()
-
     # Add a new method to send messages through the client socket
     def send_message_to_server(self, message):
         try:
@@ -59,26 +53,5 @@ class ClientChatWindow(QMainWindow):
         message = json.loads(messagein)
         formatted_message = message["username"] + " (" + message["time"] + ") : " + message["text"]
         self.text_display.append(formatted_message)
-
-    def displayText(self, message):
-        self.text_display.append(message)
-
-    def start_receive_thread(self):
-        # Start a thread for continuous communication
-        communication_thread = Thread(target=self.receive_messages)
-        communication_thread.daemon = True
-        communication_thread.start()
-
-    def receive_messages(self):
-        while True:
-            try:
-                message = self.client_socket.recv(1024).decode()
-                if not message:
-                    break  # Break the loop if no message is received (connection closed)
-                # Emit the signal with the received message and sender
-                self.client_display_message(message)
-            except Exception as e:
-                print(f"Error receiving message: {e}")
-                break
 
 #Merge Issues

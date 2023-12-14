@@ -71,6 +71,7 @@ def open_client_chat_window(client_socket, username):
                 message = client_socket.recv(1024).decode()
                 if not message:
                     break  # Break the loop if no message is received (connection closed)
+                print(f"Received message")
                 new_client_chat_window.client_display_message(message)
             except Exception as e:
                 print(f"Error receiving message: {e}")
