@@ -1,6 +1,9 @@
 # Lucians Local Chatroom
 This is a project made for a computer networking class. The goal is to have a TCP client/server connection and allow coninuous chat over a local network.
 
+# Version 1.3
+Added peer-server encryption using an asymmetric key system then transferring to a symmetric key system.
+
 # Version 1.2
 Changed messages over to JSON packages. Allowed for each client to have an identifiable username set by the user. Allows for more functionality to be explored with being able to send more complex messages.
 Messages may still be seen by scraping network traffic and will most likely be the goal for v1.3
@@ -12,11 +15,11 @@ Changed how the 'server' functioned so that it was a distribution node to all co
 Allows for multiple clients to connect to the running app, however the 'Sever' side chat window will only respond to the last client connected.
 
 # Future Plans
-  - One file start that allows the user to choose to either start a server or start a client
-  - Server can connect multiple clients and brodcast one clients message to all other connected clients
-  - Clients will be prompted for a username for the server to hold temporarily so clients are identifyable other than IP adress
-  - Server has option to brodcast to all clients or whisper to an individual
-  - Adding Security
+- [ ] One file start that allows the user to choose to either start a server or start a client
+- [x] Server can connect multiple clients and brodcast one clients message to all other connected clients
+- [x] Clients will be prompted for a username for the server to hold temporarily so clients are identifyable other than IP adress
+- [ ] Server has option to brodcast to all clients or whisper to an individual
+- [x] Adding Security (Peer to server encryption)
 
 # Install Instructions
 
@@ -35,9 +38,9 @@ This Application has not been tested on any version of Linux
 
 Install files from Git Repository
 
-Ensure 'PyQt5' is installed and is usable by Python.
+Make sure these Python libraries are installed
 
-Ensure 'Requests' is installed and is usable by Python.
+pyqt5, requests, rsa, cryptography
 
 > The easiest way to esure these are installed is to run the program through an IDE.
 > 
