@@ -121,7 +121,7 @@ class ChatServer:
             try:
                 print(1)
                 encrypedmessage = userID.recv(1024)
-                message = fernet.decrypt(encrypedmessage).decode()
+                message = fernet.decrypt(encrypedmessage)
                 if not message:
                     break  # Break the loop if no message is received (connection closed)
                 print(f"Received message")  # Debugging statement
