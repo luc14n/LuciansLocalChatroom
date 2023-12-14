@@ -1,15 +1,12 @@
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QTextEdit, QPushButton, QLineEdit
-from threading import Thread
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QTextEdit, QLineEdit
 from datetime import datetime
 import json
 
 class ClientChatWindow(QMainWindow):
 
-    def __init__(self, send_message_callback, client_socket, username):
+    def __init__(self, client_socket, username):
         super().__init__()
         self.client_socket = client_socket
-        self.init_ui(send_message_callback)
         self.userName = username
 
     def init_ui(self, send_message_callback):
