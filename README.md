@@ -1,6 +1,13 @@
 # Lucians Local Chatroom
 This is a project made for a computer networking class. The goal is to have a TCP client/server connection and allow coninuous chat over a local network.
 
+# Version 1.2
+Changed messages over to JSON packages. Allowed for each client to have an identifiable username set by the user. Allows for more functionality to be explored with being able to send more complex messages.
+Messages may still be seen by scraping network traffic and will most likely be the goal for v1.3
+
+# Version 1.1
+Changed how the 'server' functioned so that it was a distribution node to all connected clients. Fixed a bug with multiple clients not having continuous chat functionality. Set up start to allow for messages to be changed to json packages.
+
 # Version 1.0
 Allows for multiple clients to connect to the running app, however the 'Sever' side chat window will only respond to the last client connected.
 

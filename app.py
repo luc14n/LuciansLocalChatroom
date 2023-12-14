@@ -1,6 +1,8 @@
+import json
 import sys
 import threading
 import time
+from datetime import datetime
 
 import requests
 from PyQt5.QtWidgets import QApplication
@@ -22,8 +24,8 @@ def get_local_ip():
         return None
 
 def send_message(message):
-    chat_window.display_message(f"You: {message}")  # Display your messages
-    server.sendToConnectedClients(message, None)
+    chat_window.display_message_json(message)  # Display your messages
+    server.sendToConnectedClients(message.encode(), None)
 
 def main(port_number):
     # Get the IP address of the system

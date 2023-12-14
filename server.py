@@ -6,19 +6,22 @@ from threading import Thread
 clients = []
 clientAddress = []
 
+
 def broadcast(message, sender_socket):
-    print(f"Broadcasting: {message}")  # Debugging statement
+    print(f"Broadcasting")  # Debugging statement
     try:
         print(f"Trying to send to: {sender_socket}")  # Debugging statement
-        sender_socket.send(message.encode())
+        sender_socket.send(message)
         print("Success")
     except Exception as e:
         print(f"Failed to send message to client: {e}")
+
 
 def sendToConnectedClients(message, user):
     for userID in clients:
         if userID != user:
             broadcast(message, userID)
+
 
 class ChatServer:
     global global_socket
@@ -49,6 +52,7 @@ class ChatServer:
         while True:
             client_socket, client_address = self.server_socket.accept()
             self.chat_window.display_message(f"Connected to {client_address}")
+            print(f"Connected to {client_address}")
             clients.append(client_socket)  # Add the new client to the list
             clientAddress.append(client_address)
 
@@ -59,11 +63,10 @@ class ChatServer:
             for userID in clients:
                 try:
                     print(1)
-                    message = userID.recv(1024).decode()
+                    message = userID.recv(1024)
                     if not message:
                         break  # Break the loop if no message is received (connection closed)
-                    print(f"Received message: {message}")  # Debugging statement
-                    self.chat_window.display_message(f"Client {userID}: {message}")
+                    print(f"Received message")  # Debugging statement
                     sendToConnectedClients(message, userID)
                 except Exception as e:
                     print(f"Error receiving message: {e}")
