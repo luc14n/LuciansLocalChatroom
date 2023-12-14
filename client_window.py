@@ -38,16 +38,10 @@ class ClientChatWindow(QMainWindow):
         message = {"username": self.userName,
                    "text": self.input_field.text(),
                    "time": str(datetime.now())}
-        self.send_message_callback(json.dumps(message))
+        dump = json.dumps(message)
+        self.client_socket.send(dump.encode())
+        self.client_display_message(dump)
         self.input_field.clear()
-
-    # Add a new method to send messages through the client socket
-    def send_message_to_server(self, message):
-        try:
-            if self.client_socket:
-                self.client_socket.send(message.encode())
-        except Exception as e:
-            print(f"Failed to send message to server: {e}")
 
     def client_display_message(self, messagein):
         message = json.loads(messagein)

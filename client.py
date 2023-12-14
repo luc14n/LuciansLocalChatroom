@@ -6,7 +6,6 @@ from client_window import ClientChatWindow
 
 def send_message(message):
     client_chat_window.client_display_message(message)
-    client_chat_window.send_message_to_server(message)
 
 
 class ServerInfoDialog(QDialog):
