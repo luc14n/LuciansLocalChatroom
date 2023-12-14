@@ -1,4 +1,3 @@
-import concurrent
 import socket
 from threading import Thread
 
@@ -38,13 +37,8 @@ class ChatServer:
         self.chat_window.display_message("Server is now listening for connections.")
 
         connection_thread = Thread(target=self.seeNewConnections)
-        read_connection_thread = Thread(target=self.readConnections)
-
         connection_thread.daemon = True
-        read_connection_thread.daemon = True
-
         connection_thread.start()
-        read_connection_thread.start()
 
             # Inside the server's main loop
 
@@ -56,21 +50,24 @@ class ChatServer:
             clients.append(client_socket)  # Add the new client to the list
             clientAddress.append(client_address)
 
+            read_connection_thread = Thread(target=lambda: self.readConnections(client_socket))
+            read_connection_thread.daemon = True
+            read_connection_thread.start()
 
-    def readConnections(self):
+
+    def readConnections(self, userID):
         print(2)
         while True:
-            for userID in clients:
-                try:
-                    print(1)
-                    message = userID.recv(1024)
-                    if not message:
-                        break  # Break the loop if no message is received (connection closed)
-                    print(f"Received message")  # Debugging statement
-                    sendToConnectedClients(message, userID)
-                except Exception as e:
-                    print(f"Error receiving message: {e}")
-                    break
+            try:
+                print(1)
+                message = userID.recv(1024)
+                if not message:
+                    break  # Break the loop if no message is received (connection closed)
+                print(f"Received message")  # Debugging statement
+                sendToConnectedClients(message, userID)
+            except Exception as e:
+                print(f"Error receiving message: {e}")
+                break
 
 def server_thread(host, port, chat_window):
     server = ChatServer(host, port, chat_window)

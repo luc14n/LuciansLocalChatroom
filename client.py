@@ -4,11 +4,6 @@ from threading import Thread
 import socket
 from client_window import ClientChatWindow
 
-def send_message(message):
-    client_chat_window.client_display_message(message)
-    client_chat_window.send_message_to_server(message)
-
-
 class ServerInfoDialog(QDialog):
     def __init__(self):
         super().__init__()
@@ -63,7 +58,7 @@ def open_client_chat_window(client_socket, username):
     global client_chat_window
 
     # Ensure thread safety by using a local variable
-    new_client_chat_window = ClientChatWindow(send_message, client_socket, username)
+    new_client_chat_window = ClientChatWindow(client_socket, username)
 
     def receive_messages():
         while True:
@@ -71,6 +66,7 @@ def open_client_chat_window(client_socket, username):
                 message = client_socket.recv(1024).decode()
                 if not message:
                     break  # Break the loop if no message is received (connection closed)
+                print(f"Received message")
                 new_client_chat_window.client_display_message(message)
             except Exception as e:
                 print(f"Error receiving message: {e}")
