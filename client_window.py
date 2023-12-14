@@ -6,10 +6,14 @@ class ClientChatWindow(QMainWindow):
 
     def __init__(self, client_socket, username):
         super().__init__()
+        self.input_field = None
+        self.text_display = None
         self.client_socket = client_socket
         self.userName = username
 
-    def init_ui(self, send_message_callback):
+        self.init_ui()
+
+    def init_ui(self):
         self.setWindowTitle("Client Chat App")
         self.setGeometry(100, 100, 400, 300)
 
@@ -29,7 +33,7 @@ class ClientChatWindow(QMainWindow):
 
         self.input_field.returnPressed.connect(self.send_button_clicked)
 
-        self.send_message_callback = send_message_callback
+        #self.send_message_callback = send_message_callback
 
     def send_button_clicked(self):
         message = {"username": self.userName,
