@@ -44,7 +44,9 @@ class ClientChatWindow(QMainWindow):
                    "text": self.input_field.text(),
                    "time": str(datetime.now())}
         dump = json.dumps(message)
+
         sendMessage(dump, self.client_socket)
+
         self.client_display_message(dump)
         self.input_field.clear()
 
@@ -53,10 +55,6 @@ class ClientChatWindow(QMainWindow):
         formatted_message = message["username"] + " (" + message["time"] + ") : " + message["text"]
         self.text_display.append(formatted_message)
 
-
 def sendMessage(message, socket):
     encyptedDump = fernet.encrypt(message.encode())
     socket.send(encyptedDump)
-
-
-#Merge Issues

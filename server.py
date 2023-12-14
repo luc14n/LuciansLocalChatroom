@@ -110,18 +110,21 @@ class ChatServer:
             clientAddress.append(client_address)
 
             read_connection_thread = Thread(target=lambda: self.readConnections(client_socket, clientKey))
+
             read_connection_thread.daemon = True
             read_connection_thread.start()
 
-
     def readConnections(self, userID, key):
+
         print(2)
         fernet = Fernet(key)
         while True:
             try:
                 print(1)
+                
                 encrypedmessage = userID.recv(1024)
                 message = fernet.decrypt(encrypedmessage)
+
                 if not message:
                     break  # Break the loop if no message is received (connection closed)
                 print(f"Received message")  # Debugging statement
@@ -133,5 +136,3 @@ class ChatServer:
 def server_thread(host, port, chat_window):
     server = ChatServer(host, port, chat_window)
     server.start()
-
-#Merge Issues

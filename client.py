@@ -10,7 +10,6 @@ from cryptography.hazmat.primitives.asymmetric import padding
 import client_window
 from client_window import ClientChatWindow
 
-
 class ServerInfoDialog(QDialog):
     def __init__(self):
         super().__init__()
