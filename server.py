@@ -66,7 +66,7 @@ class ChatServer:
         self.chat_window = chat_window
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.bind((self.host, self.port))
-        self.server_socket.listen(1)
+        self.server_socket.listen(5)
 
     def start(self):
         self.chat_window.display_message("Server is now listening for connections.")
@@ -84,12 +84,16 @@ class ChatServer:
             print(f"Connected to {client_address}")
             print(public_key)
 
-            client_socket.send(public_key.public_bytes(
+            public_key_bytes = public_key.public_bytes(
                 encoding=serialization.Encoding.PEM,
                 format=serialization.PublicFormat.SubjectPublicKeyInfo
-            ))
+            )
+
+            client_socket.send(public_key_bytes)
+            print(public_key_bytes.decode())
 
             encryptedClientKey = client_socket.recv(1024)
+            print(encryptedClientKey)
 
             clientKey = private_key.decrypt(
                 encryptedClientKey,

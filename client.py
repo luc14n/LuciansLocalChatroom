@@ -64,8 +64,13 @@ class ServerInfoDialog(QDialog):
 
     def connect_encryption(self, socket):
         print(1)
-        public_key = socket.recv(1024).decode()
+        public_key = socket.recv(1024)
         print(public_key)
+
+        pem = public_key
+
+        with open('public_key.pem', 'wb') as f:
+            f.write(pem)
 
         with open("public_key.pem", "rb") as key_file:
             public_key = serialization.load_pem_public_key(
