@@ -1,14 +1,17 @@
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QTextEdit, QPushButton, QLineEdit
 from threading import Thread
+from datetime import datetime
+import json
 
 class ClientChatWindow(QMainWindow):
     message_received = pyqtSignal(str, str)  # signal for the message and sender
 
-    def __init__(self, send_message_callback, client_socket):
+    def __init__(self, send_message_callback, client_socket, username):
         super().__init__()
         self.client_socket = client_socket
         self.init_ui(send_message_callback)
+        self.userName = username
 
     def init_ui(self, send_message_callback):
         self.setWindowTitle("Client Chat App")
@@ -26,21 +29,17 @@ class ClientChatWindow(QMainWindow):
         self.input_field = QLineEdit()
         layout.addWidget(self.input_field)
 
-        send_button = QPushButton("Send")
-
-        # Adds the send button to the widget
-        #layout.addWidget(send_button)
-
         central_widget.setLayout(layout)
 
-        send_button.clicked.connect(self.send_button_clicked)
         self.input_field.returnPressed.connect(self.send_button_clicked)
 
         self.send_message_callback = send_message_callback
 
     def send_button_clicked(self):
-        message = self.input_field.text()
-        self.send_message_callback(message)
+        message = {"username": self.userName,
+                   "text": self.input_field.text(),
+                   "time": str(datetime.now())}
+        self.send_message_callback(json.dumps(message))
         self.input_field.clear()
 
     def send_message(self, client_chat_window, message):
@@ -56,12 +55,13 @@ class ClientChatWindow(QMainWindow):
         except Exception as e:
             print(f"Failed to send message to server: {e}")
 
-    def display_message(self, message, sender=None):
-        if sender :
-            formatted_message = f"{sender}: {message}"
-        else:
-            formatted_message = message
+    def client_display_message(self, messagein):
+        message = json.loads(messagein)
+        formatted_message = message["username"] + " (" + message["time"] + ") : " + message["text"]
         self.text_display.append(formatted_message)
+
+    def displayText(self, message):
+        self.text_display.append(message)
 
     def start_receive_thread(self):
         # Start a thread for continuous communication
@@ -76,7 +76,7 @@ class ClientChatWindow(QMainWindow):
                 if not message:
                     break  # Break the loop if no message is received (connection closed)
                 # Emit the signal with the received message and sender
-                self.message_received.emit(message, "Server")
+                self.client_display_message(message)
             except Exception as e:
                 print(f"Error receiving message: {e}")
                 break

@@ -5,8 +5,9 @@ import socket
 from client_window import ClientChatWindow
 
 def send_message(message):
-    client_chat_window.display_message(f"You: {message}")
+    client_chat_window.client_display_message(message)
     client_chat_window.send_message_to_server(message)
+
 
 class ServerInfoDialog(QDialog):
     def __init__(self):
@@ -18,9 +19,11 @@ class ServerInfoDialog(QDialog):
         self.setWindowTitle("Server Information")
 
         self.ip_label = QLabel("Server IP:")
-        self.port_label = QLabel("Server Port:")
         self.ip_input = QLineEdit()
+        self.port_label = QLabel("Server Port:")
         self.port_input = QLineEdit()
+        self.userName_label = QLabel("Username:")
+        self.userName = QLineEdit()
         self.connect_button = QPushButton("Connect")
 
         layout = QVBoxLayout()
@@ -28,6 +31,8 @@ class ServerInfoDialog(QDialog):
         layout.addWidget(self.ip_input)
         layout.addWidget(self.port_label)
         layout.addWidget(self.port_input)
+        layout.addWidget(self.userName_label)
+        layout.addWidget(self.userName)
         layout.addWidget(self.connect_button)
 
         self.setLayout(layout)
@@ -36,6 +41,7 @@ class ServerInfoDialog(QDialog):
 
     def connect_to_server(self):
         global server_socket, client_chat_window
+
         server_ip = self.ip_input.text()
         server_port = int(self.port_input.text())
 
@@ -45,18 +51,19 @@ class ServerInfoDialog(QDialog):
 
             # Connection successful, open client chat window
             self.hide()  # Hide the server info dialog
-            client_chat_window = open_client_chat_window(server_socket)
+            client_chat_window = open_client_chat_window(server_socket, self.userName.text())
             client_chat_window.show()
         except ConnectionRefusedError:
             print("Failed to connect to the server.")
         except Exception as e:
             print(f"An error occurred: {e}")
 
-def open_client_chat_window(client_socket):
+
+def open_client_chat_window(client_socket, username):
     global client_chat_window
 
     # Ensure thread safety by using a local variable
-    new_client_chat_window = ClientChatWindow(send_message, client_socket)
+    new_client_chat_window = ClientChatWindow(send_message, client_socket, username)
 
     def receive_messages():
         while True:
@@ -64,7 +71,7 @@ def open_client_chat_window(client_socket):
                 message = client_socket.recv(1024).decode()
                 if not message:
                     break  # Break the loop if no message is received (connection closed)
-                new_client_chat_window.display_message(message, sender="Server")
+                new_client_chat_window.client_display_message(message)
             except Exception as e:
                 print(f"Error receiving message: {e}")
                 break
@@ -75,6 +82,7 @@ def open_client_chat_window(client_socket):
     communication_thread.start()
 
     return new_client_chat_window
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

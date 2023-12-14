@@ -1,3 +1,6 @@
+import json
+from datetime import datetime
+
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QTextEdit, QPushButton, QLineEdit, QInputDialog
 
 
@@ -22,24 +25,25 @@ class ChatWindow(QMainWindow):
         self.input_field = QLineEdit()
         layout.addWidget(self.input_field)
 
-        send_button = QPushButton("Send")
-
-        # Adds the send button to the widget
-        #layout.addWidget(send_button)
-
         central_widget.setLayout(layout)
 
-        send_button.clicked.connect(self.send_button_clicked)
         self.input_field.returnPressed.connect(self.send_button_clicked)
 
         self.send_message_callback = send_message_callback
 
     def send_button_clicked(self):
-        message = self.input_field.text()
-        self.send_message_callback(message)
+        message = {"username": "Server",
+                   "text": self.input_field.text(),
+                   "time": str(datetime.now())}
+        self.send_message_callback(json.dumps(message))
         self.input_field.clear()
 
     def display_message(self, message):
         self.text_display.append(message)
+
+    def display_message_json(self, messagein):
+        message = json.loads(messagein)
+        formatted_message = message["username"] + " (" + message["time"] + ") : " + message["text"]
+        self.text_display.append(formatted_message)
 
 #Merge Issues
